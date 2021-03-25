@@ -421,11 +421,13 @@ class Couple_openmc(object):
         cell_dict = root_cell.get_all_cells()
         cell_list = utils.cell_dict_to_cell_list(cell_dict)
         cell_list.append(root_cell) # Add root_cell so that the total volume is calculated
-        vol1 = openmc.VolumeCalculation(cell_list, 100000, lower_left = ll, upper_right = ur)
+        vol1 = openmc.VolumeCalculation(cell_list, 1000000000, lower_left = ll, upper_right = ur)
+        vol1.trigger_type = 'std_dev'
+        vol1.threshold = 1e-3
 
         settings = openmc.Settings()
         settings.volume_calculations = [vol1]
-        settings.temperature = {'method':'interpolation'}
+        settings.temperature = {'method':'interpolation', 'range': (300.0, 1500.0)}
         settings.run_mode='volume'
         settings.export_to_xml(path = pre_run_path + '/settings.xml')
 
